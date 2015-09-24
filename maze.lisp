@@ -78,9 +78,9 @@ get there."
 
 (defun print-maze (maze)
   "Prints a maze to stdout."
-  (loop for x from 0 below (1+ (* 2 (maze-width maze)))
-     when (= x 1) do (princ " ") ;; north entrance
-     else do (princ "_"))        ;; north wall
+  (loop for x from 0 below (maze-width maze)
+     when (= x 0) do (princ "  ") ;; north entrance
+     else do (princ " _"))        ;; north wall
   (terpri)
   (loop for y from 0 below (maze-height maze)
      do (progn (princ "|") ;; west wall
