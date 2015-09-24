@@ -22,15 +22,15 @@ maze-cells."
 
 (defun maze-height (maze)
   "Get the height of a maze."
-  (array-dimension maze 0))
+  (array-dimension maze 1))
 
 (defun maze-cell (maze x y)
   "Gets a maze-cell at position x, y in a maze object."
-  (aref maze y x))
+  (aref maze x y))
 
 (defun (setf maze-cell) (value maze x y)
   "Sets a maze-cell at position x, y in a maze object"
-  (setf (aref maze y x) value))
+  (setf (aref maze x y) value))
 
 (defun clear-wall (maze x y side)
   "Clears walls at cell position x, y on the given side.  Side can be NORTH,
