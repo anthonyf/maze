@@ -32,6 +32,11 @@ maze-cells."
   "Sets a maze-cell at position x, y in a maze object"
   (setf (aref maze x y) value))
 
+(defun maze-cell-in-bounds-p (maze x y)
+  (and (>= x 0)(>= y 0)
+       (< x (maze-width maze))
+       (< y (maze-height maze))))
+
 (defun clear-wall (maze x y side)
   "Clears walls at cell position x, y on the given side.  Side can be NORTH,
 SOUTH, EAST or WEST."
@@ -55,9 +60,7 @@ get there."
      for direction in '(south north east west)
      for nx = (+ x ox)
      for ny = (+ y oy)
-     when (and (>= nx 0)(>= ny 0)
-               (< nx (maze-width maze))
-               (< ny (maze-height maze)))
+     when (maze-cell-in-bounds-p maze nx ny)
      collect (list nx ny direction)))
 
 (defun make-maze (width height)
@@ -80,7 +83,11 @@ get there."
   "Prints a maze to stdout."
   (loop for x from 0 below (maze-width maze)
      when (= x 0) do (princ "  ") ;; north entrance
-     else do (princ " _"))        ;; north wall
+     ;; north wall
+     else do (if (and (= x 1)
+                      (maze-cell-wall-east (maze-cell maze (1- x) 0)))
+                 (princ " _")
+                 (princ "__")))
   (terpri)
   (loop for y from 0 below (maze-height maze)
      do (progn (princ "|") ;; west wall
@@ -92,7 +99,11 @@ get there."
                                 (princ " "))
                             (if (maze-cell-wall-east (maze-cell maze x y))
                                 (princ "|") ;; east wall
-                                (princ " "))))
+                                (if (and (maze-cell-wall-south (maze-cell maze x y))
+                                         (maze-cell-in-bounds-p maze (1+ x) y)
+                                         (maze-cell-wall-south (maze-cell maze (1+ x) y)))
+                                    (princ "_")
+                                    (princ " ")))))
                (terpri))))
 
 
